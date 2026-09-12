@@ -9,7 +9,7 @@ router = DefaultRouter()
 router.register(r'providers', ProviderViewSet)
 router.register(r'games', GameViewSet)
 router.register(r'game-configurations', GameConfigurationViewSet)
-router.register(r'monitoring', MonitoringViewSet)
+router.register(r'monitoring', MonitoringViewSet, basename='monitoring')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
