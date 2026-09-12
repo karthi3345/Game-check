@@ -7,6 +7,7 @@ from .services.browser_service import BrowserService
 from .services.screenshot_service import ScreenshotService
 from .services.ocr_service import OCRService
 from .services.result_analyzer import ResultAnalyzer
+from .services.alert_service import AlertService
 
 @shared_task
 def run_game_test(test_run_id: int, game_id: int):
@@ -112,8 +113,26 @@ def run_game_test(test_run_id: int, game_id: int):
         if result.error_message:
             res_dict['ocr_status'] = 'FAIL'
             
-        result.final_status = analyzer.calculate_final_status(res_dict)
+        final_status = analyzer.calculate_final_status(res_dict)
+        result.final_status = final_status
         result.completed_at = timezone.now()
+        
+        # Determine failure reason for alerts
+        if final_status != 'PASS':
+            fail_reasons = []
+            for key, val in res_dict.items():
+                if val == 'FAIL':
+                    fail_reasons.append(key)
+            result.failure_reason = " | ".join(fail_reasons) or result.error_message
+            
+            # Send alert
+            alert_svc = AlertService()
+            alert_svc.send_alert(game.name, final_status, {
+                'url_check_status': result.url_check_status,
+                'page_load_time_ms': result.page_load_time_ms,
+                'failure_reason': result.failure_reason
+            })
+            
         result.save()
         
         browser.close()
