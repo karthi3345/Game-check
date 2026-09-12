@@ -1,0 +1,65 @@
+{% extends 'dashboard/base.html' %}
+
+{% block header_title %}Test History{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+        <h3 class="font-semibold text-gray-800">All Results (Last 100)</h3>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
+                    <th class="px-6 py-4 font-medium">Time</th>
+                    <th class="px-6 py-4 font-medium">Game</th>
+                    <th class="px-6 py-4 font-medium">Provider</th>
+                    <th class="px-6 py-4 font-medium">Status</th>
+                    <th class="px-6 py-4 font-medium">Load Time</th>
+                    <th class="px-6 py-4 font-medium">Screenshot</th>
+                    <th class="px-6 py-4 font-medium text-right">Details</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                {% for result in results %}
+                <tr class="hover:bg-gray-50 transition group">
+                    <td class="px-6 py-4 text-gray-500 text-sm whitespace-nowrap">{{ result.completed_at|date:"Y-m-d H:i:s" }}</td>
+                    <td class="px-6 py-4 font-medium text-gray-900">{{ result.game.name }}</td>
+                    <td class="px-6 py-4 text-gray-500 text-sm">{{ result.provider.name }}</td>
+                    <td class="px-6 py-4">
+                        {% if result.final_status == 'PASS' %}
+                            <span class="px-2.5 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold tracking-wide">PASS</span>
+                        {% elif result.final_status == 'WARNING' %}
+                            <span class="px-2.5 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-semibold tracking-wide">WARN</span>
+                        {% elif result.final_status == 'FAIL' %}
+                            <span class="px-2.5 py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold tracking-wide">FAIL</span>
+                        {% else %}
+                            <span class="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-semibold tracking-wide">{{ result.final_status }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 text-gray-500 text-sm">
+                        {% if result.page_load_time_ms %}{{ result.page_load_time_ms }}ms{% else %}-{% endif %}
+                    </td>
+                    <td class="px-6 py-4 text-gray-500 text-sm">
+                        {% if result.screenshot_url %}
+                            <a href="{{ result.screenshot_url }}" target="_blank" class="text-blue-500 hover:underline">View</a>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <button class="text-brand-accent hover:text-blue-700 font-medium text-sm">Log &rarr;</button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="px-6 py-12 text-center text-gray-500">
+                        No test history found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

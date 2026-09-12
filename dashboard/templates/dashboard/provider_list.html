@@ -1,0 +1,29 @@
+{% extends 'dashboard/base.html' %}
+
+{% block header_title %}Game Providers{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for provider in providers %}
+    <a href="{% url 'provider_detail' provider.pk %}" class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md hover:border-brand-accent transition cursor-pointer group">
+        <div class="flex items-start justify-between">
+            <div>
+                <h3 class="text-xl font-bold text-gray-800 group-hover:text-brand-accent transition">{{ provider.name }}</h3>
+                <p class="text-sm text-gray-500 mt-1 font-mono">{{ provider.code }}</p>
+            </div>
+            <div class="p-2 rounded-full {% if provider.is_active %}bg-green-100 text-green-600{% else %}bg-gray-100 text-gray-500{% endif %}">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+            </div>
+        </div>
+        <div class="mt-6 pt-4 border-t border-gray-50 flex justify-between text-sm text-gray-600">
+            <span>{{ provider.games.count }} Games</span>
+            <span class="text-brand-accent font-medium group-hover:underline">View Details &rarr;</span>
+        </div>
+    </a>
+    {% empty %}
+    <div class="col-span-full text-center py-12 text-gray-500 bg-white rounded-xl border border-gray-100">
+        No providers configured yet.
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

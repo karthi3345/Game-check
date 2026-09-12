@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'providers',
     'games',
     'monitoring',
+    'dashboard',
 ]
 
 AUTH_USER_MODEL = 'core.User'

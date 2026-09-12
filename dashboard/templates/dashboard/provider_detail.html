@@ -1,0 +1,56 @@
+{% extends 'dashboard/base.html' %}
+
+{% block header_title %}{{ provider.name }} - Games{% endblock %}
+
+{% block content %}
+<div class="mb-6">
+    <a href="{% url 'provider_list' %}" class="text-brand-accent hover:underline text-sm">&larr; Back to Providers</a>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+        <h3 class="font-semibold text-gray-800">Game Catalogue</h3>
+        <button class="text-sm bg-brand-accent hover:bg-blue-600 text-white font-medium py-2 px-4 rounded transition shadow-sm">
+            Run Provider Tests
+        </button>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
+                    <th class="px-6 py-4 font-medium">Name</th>
+                    <th class="px-6 py-4 font-medium">Identifier</th>
+                    <th class="px-6 py-4 font-medium">Category</th>
+                    <th class="px-6 py-4 font-medium">Status</th>
+                    <th class="px-6 py-4 font-medium text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                {% for game in games %}
+                <tr class="hover:bg-gray-50 transition group">
+                    <td class="px-6 py-4 font-medium text-gray-900">{{ game.name }}</td>
+                    <td class="px-6 py-4 text-gray-500 font-mono text-sm">{{ game.identifier }}</td>
+                    <td class="px-6 py-4 text-gray-500">{{ game.category }}</td>
+                    <td class="px-6 py-4">
+                        {% if game.is_active %}
+                            <span class="px-2.5 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold tracking-wide">ACTIVE</span>
+                        {% else %}
+                            <span class="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-semibold tracking-wide">INACTIVE</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <button class="text-brand-accent hover:text-blue-700 font-medium text-sm">Test Now</button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+                        No games configured for this provider.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
